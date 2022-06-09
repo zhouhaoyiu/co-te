@@ -1,1 +1,3 @@
-// import {} from './lib'
+import font from "./lib";
+
+export default font;
