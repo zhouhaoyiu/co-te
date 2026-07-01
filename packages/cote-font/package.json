@@ -9,11 +9,11 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "typescript": "^4.7.3"
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "ts-node": "^10.8.1"
+    "ts-node": "^10.9.2"
   }
 }
