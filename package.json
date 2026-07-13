@@ -5,17 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint **/*.ts  --fix"
+    "lint": "oxlint --deny typescript/no-explicit-any .",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.62.1",
-    "@typescript-eslint/parser": "^8.62.1",
-    "eslint": "^8.57.1",
-    "eslint-config-google": "^0.14.0",
-    "typescript": "^6.0.3"
-  },
-  "packageManager": "pnpm@11.9.0"
+  "packageManager": "pnpm@11.9.0",
+  "devDependencies": {
+    "oxlint": "1.73.0",
+    "typescript": "7.0.2"
+  }
 }
