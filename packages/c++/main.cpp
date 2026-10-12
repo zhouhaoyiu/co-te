@@ -1,14 +1,18 @@
 #include <iostream>
 #include <string>
+#include <stdexcept>
 #include "Windows.h"
 #include "main.h"
 
+#ifndef CO_TE_NO_MAIN
 int main()
 {
   reverse("Hello World!");
   system("pause");
   return 0;
 }
+
+#endif
 
 void red(std::string message)
 {
@@ -136,25 +140,63 @@ void light_gray(std::string message)
   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 }
 
+namespace
+{
+  // Restore the caller's colors and console mode even when output throws.
+  struct ConsoleStyleGuard
+  {
+    HANDLE handle;
+    WORD attributes;
+    DWORD mode = 0;
+    bool restore_mode = false;
+
+    ~ConsoleStyleGuard()
+    {
+      SetConsoleTextAttribute(handle, attributes);
+      if (restore_mode)
+        SetConsoleMode(handle, mode);
+    }
+  };
+
+  void print_style(const std::string &message, WORD attribute, bool enable_underline)
+  {
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO info{};
+    if (!GetConsoleScreenBufferInfo(handle, &info))
+      throw std::runtime_error("Styling requires a Windows console screen buffer");
+
+    ConsoleStyleGuard guard{handle, info.wAttributes};
+    if (enable_underline)
+    {
+      if (!GetConsoleMode(handle, &guard.mode))
+        throw std::runtime_error("Cannot read console mode for underline");
+      if ((guard.mode & ENABLE_LVB_GRID_WORLDWIDE) == 0)
+      {
+        if (!SetConsoleMode(handle, guard.mode | ENABLE_LVB_GRID_WORLDWIDE))
+          throw std::runtime_error("This console cannot enable underline attributes");
+        guard.restore_mode = true;
+      }
+    }
+    if (!SetConsoleTextAttribute(handle, info.wAttributes | attribute))
+      throw std::runtime_error("Cannot apply console style");
+    std::cout << message << std::endl;
+  }
+}
+
 void bold(std::string message)
 {
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+  // The classic Windows console represents emphasis with foreground intensity.
+  print_style(message, FOREGROUND_INTENSITY, false);
 }
 
 void underline(std::string message)
 {
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+  print_style(message, COMMON_LVB_UNDERSCORE, true);
 }
 
-void blink(std::string message)
+void blink(std::string)
 {
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+  throw std::logic_error("Blink is not supported by the Windows console backend");
 }
 
 void reverse(std::string message)

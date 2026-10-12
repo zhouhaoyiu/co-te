@@ -1,12 +1,16 @@
 {
   "name": "co-te",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Terminal colors and Unicode-safe progressive text output",
+  "main": "./dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "oxlint --deny typescript/no-explicit-any .",
-    "type-check": "tsc --noEmit"
+    "build": "node scripts/build.mjs",
+    "prepack": "npm run build",
+    "test": "npm run build && npm run test:js",
+    "test:cpp": "cmake -S test/cpp -B .build/cpp && cmake --build .build/cpp --config Release && ctest --test-dir .build/cpp -C Release --output-on-failure",
+    "lint": "oxlint --deny typescript/no-explicit-any --max-warnings 0 .",
+    "type-check": "tsc --noEmit",
+    "test:js": "node --test test/*.test.mjs"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +19,20 @@
   "devDependencies": {
     "oxlint": "1.73.0",
     "typescript": "7.0.2"
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

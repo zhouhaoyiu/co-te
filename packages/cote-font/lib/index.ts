@@ -59,7 +59,7 @@ const font: IFont = {
 };
 
 // 下划线
-interface IFont {
+export interface IFont {
   red: (message: string) => void;
   yellow: (message: string) => void;
   blue: (message: string) => void;

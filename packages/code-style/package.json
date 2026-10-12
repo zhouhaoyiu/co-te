@@ -2,19 +2,28 @@
   "name": "code-style",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "./dist/index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node ../../scripts/build.mjs",
+    "prepack": "npm run build",
+    "test": "npm --prefix ../.. test"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "ts-node": "^10.9.2",
-    "typescript": "^7.0.2"
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
-  "devDependencies": {
-    "@types/node": "^26.0.1"
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

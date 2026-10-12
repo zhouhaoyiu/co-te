@@ -1,3 +1,3 @@
-import back from "./lib";
+import back from "./lib/index.js";
 
 export default back;

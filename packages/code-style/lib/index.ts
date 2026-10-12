@@ -1,18 +1,18 @@
-/* eslint-disable no-unused-vars */
+const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 
 const style: IStyle = {
-  // 一个一个地出现
+  // Print successive prefixes without splitting visible characters.
   oneByOne: (message: string) => {
-    let _message = "";
-    for (let i = 0; i < message.length; i++) {
-      _message += message[i];
-      console.log("\x1b[0m%s\x1b[0m", _message);
+    let prefix = "";
+    for (const { segment } of segmenter.segment(message)) {
+      prefix += segment;
+      console.log("\x1b[0m%s\x1b[0m", prefix);
     }
   },
 };
 
-interface IStyle {
+export interface IStyle {
   oneByOne: (message: string) => void;
 }
-style.oneByOne("hello world");
+
 export default style;

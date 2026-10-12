@@ -1,3 +1,3 @@
-import style from "./lib";
+import style from "./lib/index.js";
 
 export default style;

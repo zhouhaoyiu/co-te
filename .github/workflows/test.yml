@@ -1,0 +1,23 @@
+name: Package and console regression tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [22, 26]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: pnpm/action-setup@v6
+      - run: pnpm --config.trust-lockfile=true install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run type-check
+      - run: npm test
+      - run: npm run test:cpp

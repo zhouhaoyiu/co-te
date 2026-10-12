@@ -34,7 +34,7 @@ const back: IBack = {
   },
 };
 
-interface IBack {
+export interface IBack {
   red: (message: string) => void;
   yellow: (message: string) => void;
   blue: (message: string) => void;
