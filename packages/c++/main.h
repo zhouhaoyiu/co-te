@@ -15,4 +15,13 @@ void reverse(std::string message);
 void bold(std::string message);
 void underline(std::string message);
 void blink(std::string message);
+void light_red(std::string message);
+void light_green(std::string message);
+void light_blue(std::string message);
+void light_yellow(std::string message);
+void light_magenta(std::string message);
+void light_cyan(std::string message);
+void light_white(std::string message);
+void light_black(std::string message);
+void light_gray(std::string message);
 #endif

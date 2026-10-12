@@ -4,6 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 void check(bool condition, const std::string& message) {
   if (!condition) throw std::runtime_error(message);
@@ -49,20 +50,76 @@ int main(int argc, char** argv) {
       check(rejected, "Blink must explicitly report unsupported behavior");
       check(output.buffer.str().empty(), "Unsupported blink must not print misleading output");
       check(attribute_calls.empty() && mode_calls.empty(), "Unsupported blink must not change console state");
-    } else if (test == "write-failure") {
+    } else if (test == "colors") {
+      const std::vector<std::pair<void (*)(std::string), WORD>> colors = {
+        {red, 4}, {green, 2}, {blue, 1}, {yellow, 6}, {magenta, 5}, {cyan, 3},
+        {white, 7}, {black, 0}, {gray, 7}, {light_red, 12}, {light_green, 10},
+        {light_blue, 9}, {light_yellow, 14}, {light_magenta, 13}, {light_cyan, 11},
+        {light_white, 15}, {light_black, 8}, {light_gray, 15}
+      };
+      for (const auto& color : colors) {
+        attributes = 0x80bc;
+        attribute_calls.clear();
+        Capture output;
+        color.first("color text");
+        check(output.buffer.str() == "color text\n", "Colors must print exactly once");
+        check(attribute_calls == std::vector<WORD>{static_cast<WORD>(0x80b0 | color.second), 0x80bc},
+              "Colors must preserve background/style bits and restore the exact initial attributes");
+        check(attributes == 0x80bc && mode_calls.empty(), "Color call leaked console state");
+      }
+      attributes = 0x24;
+    } else if (test == "reverse") {
+      const std::vector<std::pair<std::string, std::string>> examples = {
+        {"", ""}, {"abc", "cba"}, {u8"A😀中", u8"中😀A"},
+        {u8"a👨‍👩‍👧‍👦b", u8"b👨‍👩‍👧‍👦a"}, {u8"a👍🏽b", u8"b👍🏽a"},
+        {u8"🇨🇳🇺🇸!", u8"!🇺🇸🇨🇳"}, {u8"e\u0301x", u8"xe\u0301"},
+        {u8"a👩🏽‍💻b", u8"b👩🏽‍💻a"}, {"a\r\nb", "b\r\na"},
+        {std::string("a\0b", 3), std::string("b\0a", 3)}
+      };
+      for (const auto& example : examples) {
+        Capture output;
+        reverse(example.first);
+        check(output.buffer.str() == example.second + "\n", "reverse split or damaged a grapheme cluster");
+      }
+    } else if (test == "reverse-invalid") {
+      for (const std::string input : {"a\xc0\xaf", "\xed\xa0\x80", "\xf4\x90\x80\x80", "\xf0\x9f", "\x80"}) {
+        Capture output;
+        bool rejected = false;
+        try { reverse(input); } catch (const std::invalid_argument&) { rejected = true; }
+        check(rejected && output.buffer.str().empty(), "Invalid UTF-8 must fail before any output");
+      }
+    } else if (test == "color-api-failure") {
+      for (const bool info_failure : {true, false}) {
+        fail_info = info_failure;
+        fail_next_attribute = !info_failure;
+        Capture output;
+        bool rejected = false;
+        try { red("must not print"); } catch (const std::runtime_error&) { rejected = true; }
+        check(rejected && output.buffer.str().empty(), "Color API failures must be reported before output");
+        check(attributes == 0x24, "Color API failure leaked attributes");
+      }
+    } else if (test == "write-failure" || test == "color-write-failure") {
       FailingBuffer failure;
       auto* old_buffer = std::cout.rdbuf(&failure);
       const auto old_exceptions = std::cout.exceptions();
       std::cout.exceptions(std::ios::badbit | std::ios::failbit);
       bool rejected = false;
-      try { underline("failing write"); } catch (const std::exception&) { rejected = true; }
+      try {
+        if (test == "color-write-failure") blue("failing write");
+        else underline("failing write");
+      } catch (const std::exception&) { rejected = true; }
       std::cout.exceptions(std::ios::goodbit);
       std::cout.clear();
       std::cout.rdbuf(old_buffer);
       std::cout.exceptions(old_exceptions);
       check(rejected, "Output failure must propagate");
-      check(attribute_calls == std::vector<WORD>{0x8024, 0x24}, "Output failure must restore attributes");
-      check(mode_calls == std::vector<DWORD>{0x13, 0x03}, "Output failure must restore mode");
+      if (test == "color-write-failure") {
+        check(attribute_calls == std::vector<WORD>{0x21, 0x24}, "Color output failure must restore attributes");
+        check(mode_calls.empty(), "Color output failure must preserve mode");
+      } else {
+        check(attribute_calls == std::vector<WORD>{0x8024, 0x24}, "Output failure must restore attributes");
+        check(mode_calls == std::vector<DWORD>{0x13, 0x03}, "Output failure must restore mode");
+      }
     } else {
       if (test == "info-failure") fail_info = true;
       else if (test == "get-mode-failure") fail_get_mode = true;

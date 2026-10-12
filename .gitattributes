@@ -1,1 +1,5 @@
 *.ts linguist-language=typescript
+
+# Keep vendored sources byte-identical to their pinned upstream hashes.
+packages/c++/vendor/utf8proc/* text eol=lf
+packages/c++/vendor/utf8proc/utf8proc_data.c -whitespace

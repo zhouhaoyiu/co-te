@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <utility>
 
 void check(bool condition, const char* message) {
   if (!condition) throw std::runtime_error(message);
@@ -69,6 +70,26 @@ int main() {
       DWORD restored_mode = 0;
       check(GetConsoleScreenBufferInfo(buffer, &restored) != 0 && restored.wAttributes == attributes, "Native attributes not restored");
       check(GetConsoleMode(buffer, &restored_mode) != 0 && restored_mode == mode, "Native mode not restored");
+    }
+    const std::vector<std::pair<void (*)(std::string), WORD>> colors = {
+      {red, 4}, {green, 2}, {blue, 1}, {yellow, 6}, {magenta, 5}, {cyan, 3},
+      {white, 7}, {black, 0}, {gray, 7}, {light_red, 12}, {light_green, 10},
+      {light_blue, 9}, {light_yellow, 14}, {light_magenta, 13}, {light_cyan, 11},
+      {light_white, 15}, {light_black, 8}, {light_gray, 15}
+    };
+    for (const auto& color : colors) {
+      ConsoleCapture output(buffer);
+      std::cout.rdbuf(&output);
+      color.first("native color");
+      std::cout.rdbuf(original_stream);
+      check(output.text == "native color\n", "Color changed the message");
+      check(!output.observations.empty(), "No color output observations");
+      for (const auto& seen : output.observations) {
+        check(seen.attributes == ((attributes & ~0x000f) | color.second), "Native color discarded the background");
+        check(seen.mode == mode, "Native color changed console mode");
+      }
+      CONSOLE_SCREEN_BUFFER_INFO restored{};
+      check(GetConsoleScreenBufferInfo(buffer, &restored) != 0 && restored.wAttributes == attributes, "Native color not restored");
     }
     ConsoleCapture capture(buffer);
     std::cout.rdbuf(&capture);

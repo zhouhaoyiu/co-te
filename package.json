@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "prepare": "npm run build",
     "prepack": "npm run build",
     "test": "npm run build && npm run test:js",
     "test:cpp": "cmake -S test/cpp -B .build/cpp && cmake --build .build/cpp --config Release && ctest --test-dir .build/cpp -C Release --output-on-failure",
@@ -30,7 +31,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "engines": {
     "node": ">=22.12.0"

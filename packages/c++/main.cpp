@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <vector>
+#include <utility>
+#include "vendor/utf8proc/utf8proc.h"
 #include "Windows.h"
 #include "main.h"
 
@@ -13,132 +16,6 @@ int main()
 }
 
 #endif
-
-void red(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void green(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void blue(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void yellow(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void magenta(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void cyan(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void white(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void black(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void gray(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void light_red(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void light_green(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void light_blue(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void light_yellow(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void light_magenta(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void light_cyan(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void light_white(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void light_black(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0 | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
-
-void light_gray(std::string message)
-{
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-  std::cout << message << std::endl;
-  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-}
 
 namespace
 {
@@ -158,7 +35,7 @@ namespace
     }
   };
 
-  void print_style(const std::string &message, WORD attribute, bool enable_underline)
+  void print_style(const std::string &message, WORD attribute, bool enable_underline, WORD clear_attributes = 0)
   {
     HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO info{};
@@ -177,10 +54,100 @@ namespace
         guard.restore_mode = true;
       }
     }
-    if (!SetConsoleTextAttribute(handle, info.wAttributes | attribute))
+    if (!SetConsoleTextAttribute(handle, (info.wAttributes & ~clear_attributes) | attribute))
       throw std::runtime_error("Cannot apply console style");
     std::cout << message << std::endl;
   }
+}
+
+void red(std::string message)
+{
+  print_style(message, FOREGROUND_RED, false, 0x000f);
+}
+
+void green(std::string message)
+{
+  print_style(message, FOREGROUND_GREEN, false, 0x000f);
+}
+
+void blue(std::string message)
+{
+  print_style(message, FOREGROUND_BLUE, false, 0x000f);
+}
+
+void yellow(std::string message)
+{
+  print_style(message, FOREGROUND_RED | FOREGROUND_GREEN, false, 0x000f);
+}
+
+void magenta(std::string message)
+{
+  print_style(message, FOREGROUND_RED | FOREGROUND_BLUE, false, 0x000f);
+}
+
+void cyan(std::string message)
+{
+  print_style(message, FOREGROUND_GREEN | FOREGROUND_BLUE, false, 0x000f);
+}
+
+void white(std::string message)
+{
+  print_style(message, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE, false, 0x000f);
+}
+
+void black(std::string message)
+{
+  print_style(message, 0, false, 0x000f);
+}
+
+void gray(std::string message)
+{
+  print_style(message, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE, false, 0x000f);
+}
+
+void light_red(std::string message)
+{
+  print_style(message, FOREGROUND_RED | FOREGROUND_INTENSITY, false, 0x000f);
+}
+
+void light_green(std::string message)
+{
+  print_style(message, FOREGROUND_GREEN | FOREGROUND_INTENSITY, false, 0x000f);
+}
+
+void light_blue(std::string message)
+{
+  print_style(message, FOREGROUND_BLUE | FOREGROUND_INTENSITY, false, 0x000f);
+}
+
+void light_yellow(std::string message)
+{
+  print_style(message, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY, false, 0x000f);
+}
+
+void light_magenta(std::string message)
+{
+  print_style(message, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY, false, 0x000f);
+}
+
+void light_cyan(std::string message)
+{
+  print_style(message, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY, false, 0x000f);
+}
+
+void light_white(std::string message)
+{
+  print_style(message, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY, false, 0x000f);
+}
+
+void light_black(std::string message)
+{
+  print_style(message, 0 | FOREGROUND_INTENSITY, false, 0x000f);
+}
+
+void light_gray(std::string message)
+{
+  print_style(message, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY, false, 0x000f);
 }
 
 void bold(std::string message)
@@ -201,10 +168,30 @@ void blink(std::string)
 
 void reverse(std::string message)
 {
-  std::string reverse_message;
-  for (int i = message.length() - 1; i >= 0; i--)
+  std::vector<std::pair<std::size_t, std::size_t>> clusters;
+  std::size_t start = 0;
+  utf8proc_int32_t previous = 0;
+  utf8proc_int32_t state = 0;
+  for (std::size_t offset = 0; offset < message.size();)
   {
-    reverse_message += message[i];
+    utf8proc_int32_t codepoint = 0;
+    const auto count = utf8proc_iterate(
+        reinterpret_cast<const utf8proc_uint8_t *>(message.data() + offset),
+        static_cast<utf8proc_ssize_t>(message.size() - offset), &codepoint);
+    if (count < 0)
+      throw std::invalid_argument("reverse requires valid UTF-8");
+    if (offset > 0 && utf8proc_grapheme_break_stateful(previous, codepoint, &state))
+    {
+      clusters.emplace_back(start, offset - start);
+      start = offset;
+    }
+    previous = codepoint;
+    offset += static_cast<std::size_t>(count);
   }
-  std::cout << reverse_message << std::endl;
+  if (!message.empty()) clusters.emplace_back(start, message.size() - start);
+  std::string reversed;
+  reversed.reserve(message.size());
+  for (auto cluster = clusters.rbegin(); cluster != clusters.rend(); ++cluster)
+    reversed.append(message, cluster->first, cluster->second);
+  std::cout << reversed << std::endl;
 }
